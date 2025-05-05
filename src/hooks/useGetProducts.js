@@ -8,5 +8,5 @@ export function useGetProducts () {
     getProducts().then(products => setProducts(products))
   }, [])
 
-  return products
+  return { products }
 }

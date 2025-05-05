@@ -1,12 +1,16 @@
 import './App.css'
 import { useGetProducts } from './hooks/useGetProducts'
+import { useFilters } from './hooks/useFilters'
+import { Filter } from './components/Filter'
+import { Products } from './components/Products'
 
 function App () {
-  const products = useGetProducts()
-  console.log(products)
+  const { products } = useGetProducts()
+  const { filters, setFilters, filterProducts } = useFilters()
   return (
     <>
-      <h1>HOSHIRANEAR</h1>
+      <Filter filters={filters} setFilters={setFilters} />
+      <Products products={filterProducts(products)} />
     </>
   )
 }
