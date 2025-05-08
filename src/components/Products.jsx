@@ -6,12 +6,13 @@ export function Products ({ products }) {
     <main className='products'>
       <ul>
         {
-          products.map(product => {
+          products.slice(0, 20)?.map(product => {
             return (
               <li className='product' key={product.id}>
                 <img src={product.imageurl} alt={product.name} />
                 <h3>{product.name}</h3>
                 <span>$ {product.price}</span>
+                <span>Cantidad: {product.quantity}</span>
                 <button><AddToCartIcon /></button>
               </li>
             )

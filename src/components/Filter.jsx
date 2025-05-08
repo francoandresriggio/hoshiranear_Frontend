@@ -1,9 +1,11 @@
 import './Filter.css'
 import { useId } from 'react'
+import { useFilters } from '../hooks/useFilters'
 
-export function Filter ({ filters, setFilters }) {
+export function Filter () {
   const minPriceId = useId()
   const categorytId = useId()
+  const { filters, setFilters } = useFilters()
   function handleMinPriceChange (value) {
     setFilters(prevState => (
       {
@@ -22,8 +24,6 @@ export function Filter ({ filters, setFilters }) {
   }
   return (
     <header>
-      <h1>HOSHIRANEAR</h1>
-      <h3>Tus amigos del k-pop</h3>
       <section className='filters'>
         <div>
           <label htmlFor={minPriceId}>Mínimo:</label>
