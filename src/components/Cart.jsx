@@ -5,7 +5,7 @@ import { useGetProducts } from '../hooks/useGetProducts'
 import './Cart.css'
 export function Cart () {
   const cartID = useId()
-  const { products, setProducts } = useGetProducts()
+  const { increaseStock, decreaseStock, resetStock } = useGetProducts()
   const { cart, addItemToCart, removeItemFromCart, clearCart, confirmCart } = useCart()
   return (
     <>
@@ -23,8 +23,8 @@ export function Cart () {
                   </div>
                   <footer>
                     <small>Cantidad: {product.quantity}</small>
-                    <button onClick={() => addItemToCart(product, products, setProducts)}>+</button>
-                    <button onClick={() => removeItemFromCart(product, products, setProducts)}>-</button>
+                    <button onClick={() => addItemToCart(product, decreaseStock)}>+</button>
+                    <button onClick={() => removeItemFromCart(product, increaseStock)}>-</button>
                   </footer>
                 </li>
               )
@@ -32,10 +32,10 @@ export function Cart () {
           }
         </ul>
         <div className='cart-payment'>
-          <button className='clear-cart' onClick={() => clearCart(products, setProducts)}>
+          <button className='clear-cart' onClick={() => clearCart(increaseStock)}>
             <ClearCartIcon />
           </button>
-          <button className='confirm-cart' onClick={() => confirmCart(products)}>
+          <button className='confirm-cart' onClick={() => confirmCart(resetStock)}>
             <ConfirmCartIcon />
           </button>
         </div>

@@ -7,15 +7,15 @@ import { useFilters } from '../hooks/useFilters'
 export function Products () {
   const { cart, addItemToCart, removeProductFromCart } = useCart()
 
-  const { products, setProducts } = useGetProducts()
+  const { products, increaseStock, decreaseStock } = useGetProducts()
   const { filterProducts } = useFilters(products)
   const filteredProducts = filterProducts(products)
 
-  const changeCartItemQuantity = (product, products, setProducts, isProductInCart, addItemToCart, removeProductFromCart) => {
+  const changeCartItemQuantity = (product, isProductInCart, addItemToCart, removeProductFromCart) => {
     if (isProductInCart) {
-      removeProductFromCart(product, products, setProducts)
+      removeProductFromCart(product, increaseStock)
     } else {
-      addItemToCart(product, products, setProducts)
+      addItemToCart(product, decreaseStock)
     }
   }
   return (
@@ -31,7 +31,7 @@ export function Products () {
                 <span>$ {product.price}</span>
                 <span>Cantidad: {product.quantity}</span>
                 <button
-                  onClick={() => changeCartItemQuantity(product, products, setProducts, isProductInCart, addItemToCart, removeProductFromCart)}
+                  onClick={() => changeCartItemQuantity(product, isProductInCart, addItemToCart, removeProductFromCart)}
                   style={{
                     backgroundColor: isProductInCart ? 'red' : 'green',
                     transition: 'all .3s ease'

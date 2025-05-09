@@ -7,9 +7,9 @@ export const CartContext = createContext()
 export function CartProvider ({ children }) {
   const [cart, setCart] = useState(() => JSON.parse(window.localStorage.getItem('cart')) || [])
 
-  const addItemToCart = (product, products, setProducts) => {
-    const productStock = products.find(item => item.id === product.id)
-    if (productStock.quantity <= 0) {
+  const addItemToCart = (product, decreaseStock) => {
+    const isStock = decreaseStock(product.id)
+    if (!isStock) {
       Swal.fire({
         icon: 'error',
         title: 'No hay más stock del producto',
@@ -21,11 +21,6 @@ export function CartProvider ({ children }) {
       return
     }
     const productCartIndex = cart.findIndex(item => item.id === product.id)
-    const productStockIndex = products.findIndex(item => item.id === product.id)
-    const newStock = [...products]
-    newStock[productStockIndex].quantity -= 1
-    setProducts(newStock)
-    window.localStorage.setItem('stock_available', JSON.stringify(newStock))
     if (productCartIndex !== -1) {
       const newCart = [...cart]
       newCart[productCartIndex].quantity += 1
@@ -38,13 +33,9 @@ export function CartProvider ({ children }) {
     window.localStorage.setItem('cart', JSON.stringify(newCart))
   }
 
-  const removeItemFromCart = (product, products, setProducts) => {
+  const removeItemFromCart = (product, increaseStock) => {
     const productCartIndex = cart.findIndex(item => item.id === product.id)
-    const productStockIndex = products.findIndex(item => item.id === product.id)
-    const newStock = [...products]
-    newStock[productStockIndex].quantity += 1
-    setProducts(newStock)
-    window.localStorage.setItem('stock_available', JSON.stringify(newStock))
+    increaseStock(product.id)
     if (cart[productCartIndex].quantity > 1) {
       const newCart = [...cart]
       newCart[productCartIndex].quantity -= 1
@@ -57,30 +48,24 @@ export function CartProvider ({ children }) {
     window.localStorage.setItem('cart', JSON.stringify(newCart))
   }
 
-  const removeProductFromCart = (product, products, setProducts) => {
-    const newStock = [...products]
-    const productStockIndex = products.findIndex(item => item.id === product.id)
-    newStock[productStockIndex].quantity += cart.find(item => item.id === product.id).quantity
-    setProducts(newStock)
+  const removeProductFromCart = (product, increaseStock) => {
+    increaseStock(product.id, cart.find(item => item.id === product.id).quantity)
     const newCart = cart.filter(item => item.id !== product.id)
     setCart(newCart)
     window.localStorage.setItem('cart', JSON.stringify(newCart))
   }
 
-  const clearCart = (products, setProducts) => {
+  const clearCart = increaseStock => {
     cart?.forEach(product => {
-      const newStock = [...products]
-      const productStockIndex = products.findIndex(item => item.id === product.id)
-      newStock[productStockIndex].quantity += product.quantity
-      setProducts(newStock)
-      window.localStorage.setItem('stock_available', JSON.stringify(newStock))
+      increaseStock(product.id, product.quantity)
     })
     setCart([])
     window.localStorage.removeItem('cart')
   }
 
-  const confirmCart = products => {
+  const confirmCart = resetStock => {
     if (cart.length === 0) return
+    resetStock()
     setCart([])
     window.localStorage.removeItem('cart')
     Swal.fire({
@@ -91,9 +76,6 @@ export function CartProvider ({ children }) {
       showConfirmButton: false,
       timer: 1500
     })
-    if (products.filter(product => product.quantity > 0).length === 0) {
-      window.localStorage.removeItem('stock_available')
-    }
   }
 
   return (
