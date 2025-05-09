@@ -17,7 +17,7 @@ export function Cart () {
             cart?.map(product => {
               return (
                 <li key={product.id}>
-                  <img src={product.imageurl} alt={product.name} />
+                  <img src={product.image} alt={product.name} />
                   <div>
                     <strong>{product.name}</strong> - ${product.price}
                   </div>
@@ -35,7 +35,7 @@ export function Cart () {
           <button className='clear-cart' onClick={() => clearCart(products, setProducts)}>
             <ClearCartIcon />
           </button>
-          <button className='confirm-cart' onClick={() => confirmCart()}>
+          <button className='confirm-cart' onClick={() => confirmCart(products)}>
             <ConfirmCartIcon />
           </button>
         </div>

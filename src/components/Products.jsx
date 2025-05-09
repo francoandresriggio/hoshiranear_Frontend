@@ -26,7 +26,7 @@ export function Products () {
             const isProductInCart = cart.some(item => item.id === product.id)
             return (
               <li className='product' key={product.id}>
-                <img src={product.imageurl} alt={product.name} />
+                <img src={product.image} alt={product.name} />
                 <h3>{product.name}</h3>
                 <span>$ {product.price}</span>
                 <span>Cantidad: {product.quantity}</span>

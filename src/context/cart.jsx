@@ -79,7 +79,7 @@ export function CartProvider ({ children }) {
     window.localStorage.removeItem('cart')
   }
 
-  const confirmCart = () => {
+  const confirmCart = products => {
     if (cart.length === 0) return
     setCart([])
     window.localStorage.removeItem('cart')
@@ -91,6 +91,9 @@ export function CartProvider ({ children }) {
       showConfirmButton: false,
       timer: 1500
     })
+    if (products.filter(product => product.quantity > 0).length === 0) {
+      window.localStorage.removeItem('stock_available')
+    }
   }
 
   return (
