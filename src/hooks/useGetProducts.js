@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react'
-import { getProducts } from '../services/products'
+import { useContext } from 'react'
+import { ProductsContext } from '../context/products'
 
 export function useGetProducts () {
-  const [products, setProducts] = useState([])
-
-  useEffect(() => {
-    if (window.localStorage.getItem('stock_available')) return setProducts(JSON.parse(window.localStorage.getItem('stock_available')))
-    getProducts().then(products => setProducts(products))
-  }, [])
-
-  return { products }
+  const products = useContext(ProductsContext)
+  if (!products) {
+    throw new Error('useGetProducts debe ser usado dentro de un productsProvider')
+  }
+  return products
 }

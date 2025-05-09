@@ -8,7 +8,8 @@ export function useFilters () {
     return products.filter(product => {
       return (
         product.price >= minPrice &&
-        (category === 'All' || product.category === category)
+        (category === 'All' || product.category === category) &&
+        product.quantity > 0
       )
     }
     )
