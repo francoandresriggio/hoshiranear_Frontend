@@ -1,11 +1,12 @@
-import { createContext, useState } from 'react'
+import { createContext, useReducer } from 'react'
+import { cartReducer, cartInitialState } from '../reducers/cart'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
 
 export const CartContext = createContext()
 
-export function CartProvider ({ children }) {
-  const [cart, setCart] = useState(() => JSON.parse(window.localStorage.getItem('cart')) || [])
+function useCartReducer () {
+  const [state, dispatch] = useReducer(cartReducer, cartInitialState)
 
   const addItemToCart = (product, decreaseStock) => {
     const isStock = decreaseStock(product.id)
@@ -20,54 +21,38 @@ export function CartProvider ({ children }) {
       })
       return
     }
-    const productCartIndex = cart.findIndex(item => item.id === product.id)
-    if (productCartIndex !== -1) {
-      const newCart = [...cart]
-      newCart[productCartIndex].quantity += 1
-      setCart(newCart)
-      window.localStorage.setItem('cart', JSON.stringify(newCart))
-      return
-    }
-    const newCart = [...cart, { ...product, quantity: 1 }]
-    setCart(newCart)
-    window.localStorage.setItem('cart', JSON.stringify(newCart))
+    dispatch({
+      type: 'ADD_ITEM_TO_CART',
+      payload: product
+    })
   }
 
   const removeItemFromCart = (product, increaseStock) => {
-    const productCartIndex = cart.findIndex(item => item.id === product.id)
     increaseStock(product.id)
-    if (cart[productCartIndex].quantity > 1) {
-      const newCart = [...cart]
-      newCart[productCartIndex].quantity -= 1
-      setCart(newCart)
-      window.localStorage.setItem('cart', JSON.stringify(newCart))
-      return
-    }
-    const newCart = cart.filter(item => item.id !== product.id)
-    setCart(newCart)
-    window.localStorage.setItem('cart', JSON.stringify(newCart))
+    dispatch({
+      type: 'REMOVE_ITEM_FROM_CART',
+      payload: product
+    })
   }
 
   const removeProductFromCart = (product, increaseStock) => {
-    increaseStock(product.id, cart.find(item => item.id === product.id).quantity)
-    const newCart = cart.filter(item => item.id !== product.id)
-    setCart(newCart)
-    window.localStorage.setItem('cart', JSON.stringify(newCart))
+    increaseStock(product.id, state.find(item => item.id === product.id).quantity)
+    dispatch({
+      type: 'REMOVE_PRODUCT_FROM_CART',
+      payload: product
+    })
   }
 
-  const clearCart = increaseStock => {
+  const clearCart = (cart, increaseStock) => {
     cart?.forEach(product => {
       increaseStock(product.id, product.quantity)
     })
-    setCart([])
-    window.localStorage.removeItem('cart')
+    dispatch({ type: 'CLEAR_CART' })
   }
 
   const confirmCart = resetStock => {
-    if (cart.length === 0) return
     resetStock()
-    setCart([])
-    window.localStorage.removeItem('cart')
+    dispatch({ type: 'CONFIRM_CART' })
     Swal.fire({
       icon: 'success',
       title: 'Compra realizada con exito',
@@ -78,10 +63,15 @@ export function CartProvider ({ children }) {
     })
   }
 
+  return { state, addItemToCart, removeItemFromCart, removeProductFromCart, clearCart, confirmCart }
+}
+export function CartProvider ({ children }) {
+  const { state, addItemToCart, removeItemFromCart, removeProductFromCart, clearCart, confirmCart } = useCartReducer()
+
   return (
     <CartContext.Provider value={
         {
-          cart,
+          cart: state,
           addItemToCart,
           removeItemFromCart,
           removeProductFromCart,

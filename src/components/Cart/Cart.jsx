@@ -1,7 +1,7 @@
 import { useId } from 'react'
-import { CartIcon, ClearCartIcon, ConfirmCartIcon } from './Icons'
-import { useCart } from '../hooks/useCart'
-import { useGetProducts } from '../hooks/useGetProducts'
+import { CartIcon, ClearCartIcon, ConfirmCartIcon } from '../Icons/Icons'
+import { useCart } from '../../hooks/useCart'
+import { useGetProducts } from '../../hooks/useGetProducts'
 import './Cart.css'
 export function Cart () {
   const cartID = useId()
@@ -32,7 +32,7 @@ export function Cart () {
           }
         </ul>
         <div className='cart-payment'>
-          <button className='clear-cart' onClick={() => clearCart(increaseStock)}>
+          <button className='clear-cart' onClick={() => clearCart(cart, increaseStock)}>
             <ClearCartIcon />
           </button>
           <button className='confirm-cart' onClick={() => confirmCart(resetStock)}>

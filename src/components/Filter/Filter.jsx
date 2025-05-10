@@ -1,6 +1,6 @@
 import './Filter.css'
 import { useId } from 'react'
-import { useFilters } from '../hooks/useFilters'
+import { useFilters } from '../../hooks/useFilters'
 
 export function Filter () {
   const minPriceId = useId()

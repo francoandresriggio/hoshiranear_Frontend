@@ -7,6 +7,7 @@ export const getProducts = async () => {
         id: product.id,
         name: product.name,
         price: product.price,
+        category: product.category,
         quantity: product.quantity,
         image: product.imageurl
       }

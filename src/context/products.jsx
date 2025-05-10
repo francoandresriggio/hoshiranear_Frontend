@@ -1,42 +1,44 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useReducer, useEffect } from 'react'
 import { getProducts } from '../services/products'
+import { productsReducer, ProductsInitialState } from '../reducers/products'
 
 export const ProductsContext = createContext()
 
-export function ProductsProvider ({ children }) {
-  const [products, setProducts] = useState([])
+function useProducts () {
+  const [products, dispatch] = useReducer(productsReducer, ProductsInitialState)
 
   const increaseStock = (productId, quantity = 1) => {
-    const newStock = [...products]
-    const productIndex = products.findIndex(item => item.id === productId)
-    newStock[productIndex].quantity += quantity
-    setProducts(newStock)
-    window.localStorage.setItem('stock_available', JSON.stringify(newStock))
+    dispatch({ type: 'INCREASE_STOCK', payload: { id: productId, quantity } })
   }
   const decreaseStock = productId => {
     const newStock = [...products]
     const productIndex = products.findIndex(item => item.id === productId)
     if (newStock[productIndex].quantity <= 0) return false
-    newStock[productIndex].quantity -= 1
-    setProducts(newStock)
-    window.localStorage.setItem('stock_available', JSON.stringify(newStock))
+    dispatch({ type: 'DECREASE_STOCK', payload: { id: productId } })
     return true
   }
   const resetStock = () => {
-    if (products.filter(product => product.quantity > 0).length === 0) {
-      window.localStorage.removeItem('stock_available')
-    }
+    dispatch({ type: 'RESET_STOCK' })
+  }
+
+  function GetInitialProducts () {
+    getProducts().then(products => {
+      window.localStorage.setItem('stock_available', JSON.stringify(products))
+      dispatch({ type: 'SET_PRODUCTS_FROM_API', payload: products })
+    })
   }
   useEffect(() => {
-    if (window.localStorage.getItem('stock_available')) return setProducts(JSON.parse(window.localStorage.getItem('stock_available')))
-    getProducts().then(products => {
-      setProducts(products)
-      window.localStorage.setItem('stock_available', JSON.stringify(products))
-    })
+    if (products.length === 0) GetInitialProducts()
   }, [])
 
+  return { products, increaseStock, decreaseStock, resetStock }
+}
+
+export function ProductsProvider ({ children }) {
+  const { products, increaseStock, decreaseStock, resetStock } = useProducts()
+
   return (
-    <ProductsContext.Provider value={{ products, setProducts, increaseStock, decreaseStock, resetStock }}>
+    <ProductsContext.Provider value={{ products, increaseStock, decreaseStock, resetStock }}>
       {children}
     </ProductsContext.Provider>
   )

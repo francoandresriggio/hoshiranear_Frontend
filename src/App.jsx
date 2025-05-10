@@ -1,8 +1,8 @@
 import './App.css'
-import { Header } from './components/Header'
-import { Products } from './components/Products'
-import { Cart } from './components/Cart'
-import { Footer } from './components/Footer'
+import { Header } from './components/Header/Header'
+import { Products } from './components/Products/Products'
+import { Cart } from './components/Cart/Cart'
+import { Footer } from './components/Footer/Footer'
 import { CartProvider } from './context/cart'
 
 function App () {
