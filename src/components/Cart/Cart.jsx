@@ -6,7 +6,7 @@ import './Cart.css'
 export function Cart () {
   const cartID = useId()
   const { increaseStock, decreaseStock, resetStock } = useGetProducts()
-  const { cart, addItemToCart, removeItemFromCart, clearCart, confirmCart } = useCart()
+  const { cart, addItemToCart, removeItemFromCart, clearCart, confirmCart, getTotal } = useCart()
   return (
     <>
       <label className='cart-button' htmlFor={cartID}><CartIcon /></label>
@@ -31,7 +31,10 @@ export function Cart () {
             })
           }
         </ul>
-        <div className='cart-payment'>
+        <div>
+          <strong>Total: ${getTotal(cart)}</strong>
+        </div>
+        <div className='cart-payment-buttons'>
           <button className='clear-cart' onClick={() => clearCart(cart, increaseStock)}>
             <ClearCartIcon />
           </button>

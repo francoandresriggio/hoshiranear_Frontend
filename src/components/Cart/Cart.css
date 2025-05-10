@@ -65,7 +65,7 @@
   transform: translateX(0%);
 }
 
-.cart-payment {
+.cart-payment-buttons {
   display: flex;
   gap: 8px;
   justify-content: center;
@@ -73,10 +73,10 @@
   padding-top: 10px;
 }
 
-.cart-payment .clear-cart {
+.cart-payment-buttons .clear-cart {
   background-color: rgba(255, 0, 0, 0.7);
 }
 
-.cart-payment .confirm-cart {
+.cart-payment-buttons .confirm-cart {
   background-color: rgba(0, 128, 0, 0.7);
 }

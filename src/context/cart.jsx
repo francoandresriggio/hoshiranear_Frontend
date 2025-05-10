@@ -1,5 +1,6 @@
 import { createContext, useReducer } from 'react'
 import { cartReducer, cartInitialState } from '../reducers/cart'
+import { getTotal } from '../utils/cartUtils'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
 
@@ -65,6 +66,7 @@ function useCartReducer () {
 
   return { state, addItemToCart, removeItemFromCart, removeProductFromCart, clearCart, confirmCart }
 }
+
 export function CartProvider ({ children }) {
   const { state, addItemToCart, removeItemFromCart, removeProductFromCart, clearCart, confirmCart } = useCartReducer()
 
@@ -76,7 +78,8 @@ export function CartProvider ({ children }) {
           removeItemFromCart,
           removeProductFromCart,
           clearCart,
-          confirmCart
+          confirmCart,
+          getTotal
         }
     }
     >
